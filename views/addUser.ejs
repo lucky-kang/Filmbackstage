@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>后台管理系统-添加演员</title>
+    <link rel="stylesheet" href="/bootstrap/dist/css/bootstrap.min.css">
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="/stylesheets/font-awesome.min.css">
+  <!-- Ionicons -->
+  <link rel="stylesheet" href="/stylesheets/ionicons.min.css">
+  <!-- Theme style -->
+  <link rel="stylesheet" href="/admin-lte/dist/css/AdminLTE.min.css">
+  <!-- AdminLTE Skins. We have chosen the skin-blue for this starter
+        page. However, you can choose any other skin. Make sure you
+        apply the skin class to the body tag so the changes take effect.
+  -->
+  <link rel="stylesheet" href="/admin-lte/dist/css/skins/skin-blue.min.css">
+  </head>
+  <body class="hold-transition skin-blue sidebar-mini">
+   <div class="wrapper">
+
+  
+  <% include header.ejs %>
+  <% include aside.ejs %>
+
+  <!-- Content Wrapper. Contains page content -->
+  <div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <h1>
+        添加演员
+      </h1>
+      <ol class="breadcrumb">
+        <li><a href="#"><i class="fa fa-dashboard"></i> Level</a></li>
+        <li class="active">Here</li>
+      </ol>
+    </section>
+    
+    <div class="box box-info" style="margin-top: 25px">
+        <div class="box-header with-border">
+          <h3 class="box-title">演员添加列表</h3>
+        </div>
+        <!-- /.box-header -->
+        <!-- form start -->
+        <form class="form-horizontal" method="POST" action="/addUserAction?limitNum=<%=limitNum%>&skipNum=<%=skipNum%>&totalPage=<%=totalPage%>">
+          <div class="box-body">
+            <div class="form-group">
+              <label for="usersId" class="col-sm-2 control-label">演员id</label>
+              <div class="col-sm-10">
+                <input type="text" class="form-control" id="usersId" name="usersId" placeholder="演员id">
+              </div>
+            </div>
+            <div class="form-group">
+                <label for="usersName" class="col-sm-2 control-label">演员名字</label>
+                <div class="col-sm-10">
+                  <input type="text" class="form-control" id="usersName" name="usersName" placeholder="演员名字">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="usersAlt" class="col-sm-2 control-label">演员alt</label>
+                <div class="col-sm-10">
+                  <input type="text" class="form-control" id="usersAlt" name="usersAlt" placeholder="演员alt">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="usersImg" class="col-sm-2 control-label">演员头像</label>
+                <div class="col-sm-10">
+                  <input type="url" class="form-control" id="usersImg" name="usersImg" placeholder="演员头像">
+                    <!-- /.box-body -->
+                    <div class="box-footer">
+                        <button type="button" style="margin-left: -10px" class="btn btn-danger">清空</button>
+                        <button type="submit" class="btn btn-info">添加演员</button>
+                        
+                        <button type="button"onclick="backPage(<%=limitNum%>,<%=skipNum%>)" class="btn btn-warning pull-right">返回</button>
+                    </div>
+                    <!-- /.box-footer -->
+                </div>
+            </div>
+            
+          </div>
+        </form>
+      </div>
+
+  </div>
+  <!-- /.content-wrapper -->
+  <% include footer.ejs %>
+  
+  <% include sidebar.ejs %>
+ 
+  <!-- Add the sidebar's background. This div must be placed
+       immediately after the control sidebar -->
+  <div class="control-sidebar-bg"></div>
+</div>
+</body>
+  <script src="/javascripts/jquery-2.2.3.min.js"></script>
+  <!-- Bootstrap 3.3.6 -->
+  <script src="/bootstrap/dist/js/bootstrap.min.js"></script>
+  <!-- AdminLTE App -->
+  <script src="/javascripts/app.min.js"></script>
+  <script>
+    $(function(){
+      $('.btn-danger').click(function(){
+        $('input').val('');
+      })
+    })
+    function backPage(limitNum,skipNum){
+      window.location.href = '/usersPage?limitNum=' + limitNum + '&skipNum=' + skipNum;
+    }
+  </script>
+</html>

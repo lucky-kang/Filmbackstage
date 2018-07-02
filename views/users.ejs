@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>后台管理系统-演员管理</title>
+    <meta name="referrer" content="no-referrer">
+    <link rel="stylesheet" href="/bootstrap/dist/css/bootstrap.min.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="/stylesheets/font-awesome.min.css">
+    <!-- Ionicons -->
+    <link rel="stylesheet" href="/stylesheets/ionicons.min.css">
+    <!-- Theme style -->
+    <link rel="stylesheet" href="/admin-lte/dist/css/AdminLTE.min.css">
+    <!-- AdminLTE Skins. We have chosen the skin-blue for this starter
+          page. However, you can choose any other skin. Make sure you
+          apply the skin class to the body tag so the changes take effect.
+    -->
+    <link rel="stylesheet" href="/admin-lte/dist/css/skins/skin-blue.min.css">
+  </head>
+  <body class="hold-transition skin-blue sidebar-mini">
+  <div class="wrapper">
+  <% include header.ejs %>
+  <% include aside.ejs %>
+
+  <!-- Content Wrapper. Contains page content -->
+  <div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <h1>
+        演员管理
+      </h1>
+      <ol class="breadcrumb">
+        <li><a href="#"><i class="fa fa-dashboard"></i> Level</a></li>
+        <li class="active">Here</li>
+      </ol>
+    </section>
+    <!-- 主页面 -->
+    <section class="content">
+      <!-- 列表显示页 -->
+      <div class="box">
+        <div class="box-header">
+          <!-- 分页效果 -->
+          <a href="/addUserRoute?limitNum=<%=limitNum%>&skipNum=<%=skipNum%>&totalPage=<%=totalPage%>"><button class="btn btn-success">添加演员</button></a>
+          <div class="pull-right">
+            <button class="btn btn-info"onclick="showAll(<%=totalPage%>,<%=limitNum%>,<%=skipNum%>)">查看所有数据</button>
+            <button class="btn btn-primary"onclick="FirstPage(<%=limitNum%>,<%=totalPage%>)">首页</button>
+            <button class="btn btn-warning"onclick="goPrevPage(<%=skipNum%>,<%=limitNum%>,<%=totalPage%>)">上一页</button>
+            当前所在<input type="text" style="width: 40px" value="<%= skipNum %>"onchange="whenPage(<%= limitNum %>,<%= totalPage %>)"/>
+            /<input type="text" style="width: 40px" value="<%= totalPage %>" disabled />
+            <button class="btn btn-warning"onclick="goNextPage(<%=skipNum%>,<%=limitNum%>,<%=totalPage%>)">下一页</button>
+            <button class="btn btn-primary"onclick="EndPage(<%=skipNum%>,<%=limitNum%>,<%=totalPage%>)">尾页</button>
+            一页显示<select id="limitNum"onchange="changeLimit(<%=limitNum%>)">
+                <% if(limitNum == 5 ){ %>
+                  <option value="5" selected>5</option>
+                  <option value="10">10</option>
+                  <option value="15">15</option>
+                <% }else if(limitNum == 10){ %>
+                  <option value="5">5</option>
+                  <option value="10" selected>10</option>
+                  <option value="15">15</option>
+                <% }else if(limitNum == 15){ %>
+                  <option value="5">5</option>
+                  <option value="10">10</option>
+                  <option value="15" selected>15</option>
+                <% }else if(limitNum == 60){ %>
+                  <option value="5">5</option>
+                  <option value="10">10</option>
+                  <option value="15">15</option>
+                  <option value="60" selected>60</option>
+                <% } %>
+              </select>个
+          </div>
+        </div>
+        <!-- /.box-header -->
+        <div class="box-body no-padding">
+          <table class="table table-hover table-bordered">
+            <tbody>
+              <tr>
+              <th class="text-center">#</th>
+              <th class="text-center">名字</th>
+              <th class="text-center">个人信息</th>
+              <th class="text-center">操作</th>
+            </tr>
+          <% if(skipNum < totalPage * limitNum){ %>
+            <% for(var i = 0;i < result.length; i++){ %>
+              <tr class="text-center">
+                <td style="line-height: 50px"><%= i+1 %></td>
+                <td style="line-height: 50px"><%= result[i].name %></td>
+                <td><img src= "<%= result[i].avatars.small %>" style="width:45px;height: auto"</img></td>
+                <td style="line-height: 50px">
+                  <button class="btn btn-warning"onclick="updateUser(<%=result[i].id%>,<%=limitNum%>,<%=skipNum%>)">编辑</button>
+                  <button class="btn btn-danger"onclick="deleteUser(<%=limitNum%>,<%=skipNum%>,<%=totalPage%>,<%=result[i].id%>)">删除</button>
+                </td>
+              </tr>
+            <% } %>
+          <% }else { %>
+          <tr class="text-center">
+            <td colspan="4">暂无数据！</td>
+          </tr>
+        <% } %>
+          </tbody>
+        </table>
+        </div>
+
+        <!-- /.box-body -->
+      </div>
+    </section>
+  </div>
+  <!-- /.content-wrapper -->
+  <% include footer.ejs %>
+  
+  <% include sidebar.ejs %>
+ 
+  <!-- Add the sidebar's background. This div must be placed
+       immediately after the control sidebar -->
+  <div class="control-sidebar-bg"></div>
+</div>
+  <script src="/javascripts/jquery-2.2.3.min.js"></script>
+  <!-- Bootstrap 3.3.6 -->
+  <script src="/bootstrap/dist/js/bootstrap.min.js"></script>
+  <!-- AdminLTE App -->
+  <script src="/javascripts/app.min.js"></script>
+  <script>
+    function whenPage(limitNum,totalPage){
+        var val = $('input').eq(1).val();
+        if(val <= 1){
+          $('input').eq(1).val(1);
+        }else if(val >= totalPage){
+          $('input').eq(1).val(totalPage);
+        }
+        window.location.href = '/usersPage?limitNum=' + limitNum + '&skipNum=' + val;
+    }
+    function changeLimit ( limitNum ) {
+        var limitNum = $("#limitNum").val();
+        window.location.href = '/usersPage?limitNum='+limitNum+'&skipNum=1';
+    }
+    function goPrevPage(skipNum,limitNum,totalPage){
+        var skipNum = skipNum;
+        if(skipNum == 1){
+          $('input').eq(1).val(1);
+          skipNum = 0;
+        }else{
+          skipNum -= 1;
+        }
+        window.location.href = '/usersPage?limitNum=' + limitNum + '&skipNum=' + skipNum + '&totalPage=' + totalPage;
+    }
+    function goNextPage(skipNum,limitNum,totalPage){
+        var skipNum = skipNum;
+        if(skipNum == totalPage){
+          $('input').eq(1).val(totalPage);
+        }else{
+          skipNum += 1;
+        }
+        window.location.href = '/usersPage?limitNum=' + limitNum + '&skipNum=' + skipNum + '&totalPage=' + totalPage;
+    }
+    function FirstPage(limitNum,totalPage){
+      window.location.href = '/usersPage?limitNum=' + limitNum + '&skipNum=0' + '&totalPage=' + totalPage;
+    }
+    function EndPage(skipNum,limitNum,totalPage){
+      var skipNum = totalPage;
+      window.location.href = '/usersPage?limitNum=' + limitNum + '&skipNum=' + skipNum + '&totalPage=' + totalPage;
+    }
+    function showAll(totalPage,limitNum){
+      window.location.href = '/usersPage?limitNum=' + limitNum*totalPage + '&skipNum=1';
+    }
+    function deleteUser(limitNum,skipNum,totalPage,id){
+        window.location.href = '/user_delete?id=' + id + '&limitNum=' + limitNum + '&skipNum=' + skipNum + '&totalPage=' + totalPage;
+    }
+    function updateUser(id,limitNum,skipNum){
+      window.location.href = '/updateUser?id=' + id + '&limitNum=' + limitNum + '&skipNum=' + skipNum;
+    }
+  </script>
+  </body>
+</html>
